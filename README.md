@@ -10,20 +10,33 @@
 
 ## Стек
 
-- Разное
+- React 19 + TypeScript
+- Vite
+- Mantine
+- Vitest + Testing Library
+- ESLint (typescript-eslint)
+- Архитектура: Feature-Sliced Design
 
 ## Установка
-
-<!-- Опишите установку: клонирование, зависимости, переменные окружения -->
 
 ```bash
 git clone https://github.com/kirill0991/ai-for-developers-project-386.git
 cd ai-for-developers-project-386
+npm install
 ```
 
 ## Использование
 
-<!-- Добавьте примеры запуска и запись asciinema — именно это смотрит работодатель -->
+```bash
+npm run dev        # запуск dev-сервера
+npm run build      # production-сборка (tsc -b && vite build)
+npm run preview    # предпросмотр production-сборки
+npm test           # запуск тестов
+npm run lint       # проверка линтером
+npm run typecheck  # проверка типов
+```
+
+<!-- Добавьте запись asciinema — именно это смотрит работодатель -->
 
 ---
 
