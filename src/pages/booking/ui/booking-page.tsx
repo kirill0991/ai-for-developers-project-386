@@ -1,4 +1,5 @@
-import { Button, Center, Stack, Text, Title } from '@mantine/core';
+import { Center, Stack, Text, Title } from '@mantine/core';
+import { BookSlot } from '../../../features/book-slot';
 
 export function BookingPage() {
   return (
@@ -6,7 +7,7 @@ export function BookingPage() {
       <Stack align="flex-start">
         <Title order={1}>Календарь звонков</Title>
         <Text c="dimmed">Упрощённый сервис бронирования времени по мотивам Cal.com</Text>
-        <Button>Записаться на звонок</Button>
+        <BookSlot />
       </Stack>
     </Center>
   );
