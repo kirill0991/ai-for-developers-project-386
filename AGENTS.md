@@ -48,3 +48,17 @@ Conventional Commits only (`type: description`, lowercase, imperative). Allowed 
 - `test` — adding or changing tests
 - `chore` — build, auxiliary tools, dependencies
 - `build` / `ci` — build system or CI/CD changes
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live as GitHub issues (via the `gh` CLI). See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Five canonical triage roles mapped to default label strings. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
