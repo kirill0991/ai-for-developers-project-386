@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/kirill0991/ai-for-developers-project-386/compare/v1.1.0...v1.1.1) (2026-10-19)
+
+
+### Bug Fixes
+
+* import Mantine styles ([a67013f](https://github.com/kirill0991/ai-for-developers-project-386/commit/a67013f0dee3d392564c7d07938ace4ffbe808b1))
+
 ## [1.1.0](https://github.com/kirill0991/ai-for-developers-project-386/compare/v1.0.0...v1.1.0) (2026-10-19)
 
 
