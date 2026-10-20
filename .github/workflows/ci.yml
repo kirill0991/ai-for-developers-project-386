@@ -37,4 +37,5 @@ jobs:
           docker logs app
           exit 1
       - name: Check that the frontend is served
-        run: curl -sf -H 'Accept: text/html' http://localhost:8080/bookings | grep -q '<div id="root">'
+        run: |
+          curl -sf -H 'Accept: text/html' http://localhost:8080/bookings | grep -q '<div id="root">'
