@@ -7,15 +7,29 @@ Course: https://ru.hexlet.io/programs/ai-for-developers — expected behavior de
 
 ## Stack
 
-- React 19 + TypeScript, Vite
-- Mantine UI
+- Frontend: React 19 + TypeScript, Vite, Mantine UI, React Router
 - Feature-Sliced Design (`src/app`, `src/pages`, `src/widgets`, `src/features`, `src/entities`, `src/shared`)
+- Backend: Fastify + SQLite (`better-sqlite3`) in `server/`
+- API contract: TypeSpec (`spec/main.tsp`) → OpenAPI, JSON Schema (`server/schemas/`) and
+  client SDK via orval (`src/shared/api/generated.ts`). See ADR-0002.
 - Vitest + Testing Library, ESLint (typescript-eslint)
+
+## Architecture notes
+
+- The frontend talks to the API only through the generated SDK, wrapped by entity functions
+  (`src/entities/*/model`) that throw `ApiError` on unexpected statuses.
+- Never edit `src/shared/api/generated.ts` by hand — change `spec/main.tsp` and run `npm run generate`.
+- In dev, Vite proxies `/event-types`, `/slots` and `/bookings` to `http://localhost:3000`;
+  browser navigations (HTML requests) fall through to the SPA.
+- Times are shown in Moscow time (fixed UTC+3), see `src/shared/lib/time.ts`.
 
 ## Commands
 
 - `npm install` — install dependencies
-- `npm run dev` — start dev server
+- `npm run dev` — start frontend dev server (Vite)
+- `npm run dev:server` — start backend (Fastify) in watch mode on port 3000
+- `npm run start:server` — start backend (`DB_PATH`, `PORT`, `HOST` env vars)
+- `npm run generate` — regenerate OpenAPI, JSON Schema and client SDK from TypeSpec
 - `npm run build` — production build (`tsc -b && vite build`)
 - `npm run preview` — preview production build
 - `npm test` — run all tests (`vitest run`)
