@@ -22,6 +22,19 @@ Course: https://ru.hexlet.io/programs/ai-for-developers — expected behavior de
 - In dev, Vite proxies `/event-types`, `/slots` and `/bookings` to `http://localhost:3000`;
   browser navigations (HTML requests) fall through to the SPA.
 - Times are shown in Moscow time (fixed UTC+3), see `src/shared/lib/time.ts`.
+- The server validates that a booking starts on an offered slot (future, 30-minute grid,
+  09:00–18:00, 14-day horizon) and rejects overlaps with 409. `buildApp({ now })` injects
+  the clock in tests.
+- In production one Fastify process serves both the API and the built SPA (`server/spa.ts`):
+  HTML navigations get `index.html`, other requests hit the API or static files.
+
+## Docker
+
+- `Dockerfile` at the repo root builds the frontend and runs the server with `tsx`; the app
+  listens on `PORT` (Hexlet's check and the hosting both set it). CI builds the image and
+  smoke-tests it on `PORT=8080`.
+- `npm ci --ignore-scripts` is intentional: `better-sqlite3` ships prebuilt binaries and its
+  `node-gyp` fallback fails in the slim image.
 
 ## Commands
 

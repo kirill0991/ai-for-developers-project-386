@@ -20,3 +20,21 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker build -t calendar-app .
+      - name: Start the container on a custom PORT
+        run: docker run -d --name app -e PORT=8080 -p 8080:8080 calendar-app
+      - name: Wait for the app to respond
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:8080/event-types && exit 0
+            sleep 1
+          done
+          docker logs app
+          exit 1
+      - name: Check that the frontend is served
+        run: curl -sf -H 'Accept: text/html' http://localhost:8080/bookings | grep -q '<div id="root">'
