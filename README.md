@@ -13,6 +13,8 @@
 - React 19 + TypeScript
 - Vite
 - Mantine
+- Fastify + SQLite (better-sqlite3)
+- TypeSpec (контракт API) → OpenAPI, JSON Schema, клиентский SDK (orval)
 - Vitest + Testing Library
 - ESLint (typescript-eslint)
 - Архитектура: Feature-Sliced Design
@@ -28,13 +30,20 @@ npm install
 ## Использование
 
 ```bash
-npm run dev        # запуск dev-сервера
-npm run build      # production-сборка (tsc -b && vite build)
-npm run preview    # предпросмотр production-сборки
-npm test           # запуск тестов
-npm run lint       # проверка линтером
-npm run typecheck  # проверка типов
+npm run dev          # запуск dev-сервера фронтенда (Vite)
+npm run dev:server   # запуск бэкенда (Fastify) в watch-режиме
+npm run start:server # запуск бэкенда (Fastify)
+npm run generate     # генерация OpenAPI, JSON Schema и клиентского SDK из TypeSpec
+npm run build        # production-сборка (tsc -b && vite build)
+npm run preview      # предпросмотр production-сборки
+npm test             # запуск тестов
+npm run lint         # проверка линтером
+npm run typecheck    # проверка типов
 ```
+
+Бэкенд слушает `http://localhost:3000`. В dev-режиме Vite проксирует
+`/event-types`, `/slots` и `/bookings` на бэкенд, поэтому фронтенд и бэкенд
+запускаются в двух терминалах (`npm run dev` и `npm run dev:server`).
 
 <!-- Добавьте запись asciinema — именно это смотрит работодатель -->
 
