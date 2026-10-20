@@ -1,8 +1,10 @@
 import "@typespec/http";
 import "@typespec/openapi3";
+import "@typespec/json-schema";
 
 using Http;
 using OpenAPI;
+using JsonSchema;
 
 @service(#{
   title: "Календарь звонков",
@@ -12,6 +14,7 @@ namespace Calendar;
 
 // --- Типы событий ---
 
+@jsonSchema
 model EventType {
   id: string;
   name: string;
@@ -19,6 +22,7 @@ model EventType {
   duration: int32;
 }
 
+@jsonSchema
 model EventTypeCreate {
   @minLength(1) name: string;
   description: string;
@@ -27,6 +31,7 @@ model EventTypeCreate {
 
 // --- Слоты ---
 
+@jsonSchema
 model Slot {
   start: utcDateTime;
   end: utcDateTime;
@@ -35,6 +40,7 @@ model Slot {
 
 // --- Брони ---
 
+@jsonSchema
 model Booking {
   id: string;
   name: string;
@@ -45,6 +51,7 @@ model Booking {
   createdAt: utcDateTime;
 }
 
+@jsonSchema
 model BookingCreate {
   @minLength(1) name: string;
   @format("email") email: string;

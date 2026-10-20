@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "typecheck": "tsc -b",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "generate": "tsp compile spec/main.tsp && orval"
   },
   "dependencies": {
     "@mantine/core": "^9.7.3",
@@ -34,6 +35,7 @@
     "eslint-plugin-react-refresh": "^0.5.7",
     "globals": "^17.13.0",
     "happy-dom": "^21.0.3",
+    "orval": "^8.43.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.72.0",
     "vite": "^8.3.4",
