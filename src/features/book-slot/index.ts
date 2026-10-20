@@ -1,1 +1,1 @@
-export * from './ui/book-slot';
+export { BookSlot } from './ui/book-slot';

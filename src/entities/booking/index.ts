@@ -1,1 +1,1 @@
-export * from './model/booking-repository';
+export * from './model/booking';

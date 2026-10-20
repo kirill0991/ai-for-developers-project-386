@@ -1,69 +1,66 @@
-import { useState } from 'react';
-import { Button, Group, Stack, Text, TextInput, Title } from '@mantine/core';
-import { addBooking, isSlotBooked } from '../../../entities/booking';
-import { DEFAULT_SCHEDULE, generateSlots, type Slot } from '../../../entities/slot';
-import { formatMoscowDate, formatMoscowTime } from '../../../shared';
+import { useCallback, useState } from 'react';
+import { Alert, Anchor, Stack, Text, Title } from '@mantine/core';
+import { Link } from 'react-router-dom';
+import type { Booking } from '../../../entities/booking';
+import type { EventType } from '../../../entities/event-type';
+import { listSlots, SLOT_HORIZON_DAYS, type Slot } from '../../../entities/slot';
+import {
+  addDays,
+  formatMoscowDate,
+  formatMoscowTime,
+  formatMoscowWeekday,
+  useAsync,
+} from '../../../shared';
+import { BookingForm } from './booking-form';
+import { SlotPicker } from './slot-picker';
 
-const HORIZON_DAYS = 7;
-
-interface FormErrors {
-  name?: string;
-  email?: string;
+function formatSlot(start: string, end: string): string {
+  const startDate = new Date(start);
+  return `${formatMoscowWeekday(startDate)}, ${formatMoscowDate(startDate)}, ${formatMoscowTime(startDate)}–${formatMoscowTime(new Date(end))}`;
 }
 
-function validate(name: string, email: string): FormErrors {
-  const errors: FormErrors = {};
-
-  if (!name.trim()) {
-    errors.name = 'Укажите имя';
-  }
-
-  if (!email.trim()) {
-    errors.email = 'Укажите email';
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    errors.email = 'Некорректный email';
-  }
-
-  return errors;
+interface BookSlotProps {
+  eventType: EventType;
+  /** Start of the booking horizon; defaults to the moment of the first render. */
+  now?: Date;
 }
 
-export function BookSlot({ now = new Date() }: { now?: Date }) {
-  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [confirmed, setConfirmed] = useState(false);
-
-  const freeSlots = generateSlots(now, DEFAULT_SCHEDULE, HORIZON_DAYS).filter(
-    (slot) => !isSlotBooked(slot.start),
+export function BookSlot({ eventType, now }: BookSlotProps) {
+  const [from] = useState(() => now ?? new Date());
+  const loadSlots = useCallback(
+    () => listSlots(eventType.id, from, addDays(from, SLOT_HORIZON_DAYS)),
+    [eventType.id, from],
   );
+  const slots = useAsync(loadSlots);
 
-  const handleSubmit = () => {
-    const nextErrors = validate(name, email);
-    setErrors(nextErrors);
+  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+  const [booking, setBooking] = useState<Booking | null>(null);
+  const [conflict, setConflict] = useState(false);
 
-    if (Object.keys(nextErrors).length > 0 || !selectedSlot) {
-      return;
-    }
-
-    addBooking({
-      slotStart: selectedSlot.start.toISOString(),
-      slotEnd: selectedSlot.end.toISOString(),
-      guestName: name.trim(),
-      guestEmail: email.trim(),
-    });
-    setConfirmed(true);
+  const handleSelect = (slot: Slot) => {
+    setConflict(false);
+    setSelectedSlot(slot);
   };
 
-  if (confirmed && selectedSlot) {
+  const handleConflict = () => {
+    setConflict(true);
+    setSelectedSlot(null);
+    slots.reload();
+  };
+
+  if (booking) {
     return (
       <Stack>
-        <Title order={2}>Вы записаны</Title>
+        <Title order={2}>Бронь подтверждена</Title>
         <Text>
-          {formatMoscowDate(selectedSlot.start)} в {formatMoscowTime(selectedSlot.start)}
+          {eventType.name}: {formatSlot(booking.slotStart, booking.slotEnd)}
         </Text>
-        <Text>{name.trim()}</Text>
-        <Text>{email.trim()}</Text>
+        <Text>
+          {booking.name}, {booking.email}
+        </Text>
+        <Anchor component={Link} to="/">
+          К типам событий
+        </Anchor>
       </Stack>
     );
   }
@@ -71,27 +68,14 @@ export function BookSlot({ now = new Date() }: { now?: Date }) {
   if (selectedSlot) {
     return (
       <Stack>
-        <Title order={2}>
-          {formatMoscowDate(selectedSlot.start)} в {formatMoscowTime(selectedSlot.start)}
-        </Title>
-        <TextInput
-          label="Имя"
-          value={name}
-          onChange={(event) => setName(event.currentTarget.value)}
-          error={errors.name}
+        <Title order={2}>{formatSlot(selectedSlot.start, selectedSlot.end)}</Title>
+        <BookingForm
+          typeId={eventType.id}
+          slot={selectedSlot}
+          onBooked={setBooking}
+          onConflict={handleConflict}
+          onBack={() => setSelectedSlot(null)}
         />
-        <TextInput
-          label="Email"
-          value={email}
-          onChange={(event) => setEmail(event.currentTarget.value)}
-          error={errors.email}
-        />
-        <Group>
-          <Button variant="subtle" onClick={() => setSelectedSlot(null)}>
-            Назад
-          </Button>
-          <Button onClick={handleSubmit}>Записаться</Button>
-        </Group>
       </Stack>
     );
   }
@@ -99,19 +83,14 @@ export function BookSlot({ now = new Date() }: { now?: Date }) {
   return (
     <Stack>
       <Title order={2}>Выберите время</Title>
-      {freeSlots.length === 0 ? (
-        <Text c="dimmed">Нет свободных слотов</Text>
-      ) : (
-        freeSlots.map((slot) => (
-          <Button
-            key={slot.start.toISOString()}
-            variant="outline"
-            onClick={() => setSelectedSlot(slot)}
-          >
-            {formatMoscowDate(slot.start)} {formatMoscowTime(slot.start)}
-          </Button>
-        ))
+      {conflict && (
+        <Alert color="red" title="Слот уже занят">
+          Это время только что заняли. Выберите другое.
+        </Alert>
       )}
+      {slots.status === 'loading' && <Text c="dimmed">Загрузка…</Text>}
+      {slots.status === 'error' && <Text c="red">Не удалось загрузить слоты</Text>}
+      {slots.status === 'success' && <SlotPicker slots={slots.data} onSelect={handleSelect} />}
     </Stack>
   );
 }
