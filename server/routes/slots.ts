@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import type { Db } from '../db';
 import { intervalsOverlap } from '../domain/conflict';
+import { BOOKING_HORIZON_DAYS } from '../domain/schedule';
 import { generateSlots } from '../domain/slots';
 import type { Slot } from '../domain/types';
 import { listBookings } from '../repositories/bookings';
@@ -13,7 +14,9 @@ interface SlotsQuery {
   to: string;
 }
 
-export function registerSlotsRoutes(app: FastifyInstance, db: Db): void {
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+export function registerSlotsRoutes(app: FastifyInstance, db: Db, now: () => Date): void {
   app.get(
     '/slots',
     {
@@ -41,8 +44,11 @@ export function registerSlotsRoutes(app: FastifyInstance, db: Db): void {
         return reply.code(404).send({ message: 'Тип события не найден' });
       }
 
-      const fromDate = new Date(from);
-      const toDate = new Date(to);
+      // Past slots and slots beyond the booking horizon are never offered.
+      const current = now();
+      const horizonEnd = new Date(current.getTime() + BOOKING_HORIZON_DAYS * DAY_MS);
+      const fromDate = new Date(Math.max(new Date(from).getTime(), current.getTime()));
+      const toDate = new Date(Math.min(new Date(to).getTime(), horizonEnd.getTime()));
       const bookings = listBookings(db);
 
       const slots: Slot[] = generateSlots(fromDate, toDate, eventType.duration).map((interval) => {

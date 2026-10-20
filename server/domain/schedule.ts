@@ -13,3 +13,6 @@ export const SCHEDULE = {
   endHour: 18,
   gridMinutes: 30,
 } as const;
+
+/** How many days ahead guests can book, counted from the current moment. */
+export const BOOKING_HORIZON_DAYS = 14;

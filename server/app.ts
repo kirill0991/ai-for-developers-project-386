@@ -8,17 +8,20 @@ import { registerSlotsRoutes } from './routes/slots';
 export interface BuildAppOptions {
   db?: Db;
   logger?: boolean;
+  /** Current time source; injected in tests to keep fixed dates in the future. */
+  now?: () => Date;
 }
 
 export function buildApp(options: BuildAppOptions = {}): FastifyInstance {
   const app = Fastify({ logger: options.logger ?? false });
   const db = options.db ?? createDb();
+  const now = options.now ?? (() => new Date());
 
   void app.register(cors, { origin: true });
 
   registerEventTypesRoutes(app, db);
-  registerSlotsRoutes(app, db);
-  registerBookingsRoutes(app, db);
+  registerSlotsRoutes(app, db, now);
+  registerBookingsRoutes(app, db, now);
 
   return app;
 }

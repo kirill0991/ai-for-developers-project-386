@@ -52,3 +52,20 @@ export function generateSlots(from: Date, to: Date, durationMinutes: number): Sl
 
   return slots;
 }
+
+/**
+ * Checks that a booking may start at `start`: it must be one of the slots
+ * offered within the booking horizon from `now`, i.e. in the future, on the
+ * 30-minute grid and fully inside the working hours.
+ */
+export function isBookableSlot(
+  start: Date,
+  durationMinutes: number,
+  now: Date,
+  horizonDays: number,
+): boolean {
+  const horizonEnd = new Date(now.getTime() + horizonDays * DAY_MS);
+  return generateSlots(now, horizonEnd, durationMinutes).some(
+    (slot) => slot.start.getTime() === start.getTime(),
+  );
+}
