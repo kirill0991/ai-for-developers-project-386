@@ -8,6 +8,9 @@
 Учебный проект Хекслета: https://ru.hexlet.io/programs/ai-for-developers
 Как это должно работать: https://files.hexlet.app/a/2ipc5m
 
+**Демо:** https://calendar-calls-c6yz.onrender.com (Render, бесплатный тариф: после простоя
+первый запрос может идти до минуты, данные сбрасываются при перезапуске)
+
 ## Стек
 
 - React 19 + TypeScript

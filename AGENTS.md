@@ -36,6 +36,12 @@ Course: https://ru.hexlet.io/programs/ai-for-developers — expected behavior de
 - `npm ci --ignore-scripts` is intentional: `better-sqlite3` ships prebuilt binaries and its
   `node-gyp` fallback fails in the slim image.
 
+## Deploy
+
+- Render web service `calendar-calls` (Docker, free plan, Frankfurt), auto-deploys on push to
+  `main`: https://calendar-calls-c6yz.onrender.com
+- `.mcp.json` configures the Render MCP server; it reads the API key from `RENDER_API_KEY`.
+
 ## Commands
 
 - `npm install` — install dependencies
