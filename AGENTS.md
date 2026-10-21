@@ -53,6 +53,8 @@ Course: https://ru.hexlet.io/programs/ai-for-developers — expected behavior de
 - `npm run preview` — preview production build
 - `npm test` — run all tests (`vitest run`)
 - `npx vitest run src/app/app.test.tsx` — run a single test file
+- `npm run test:e2e` — Playwright E2E (`e2e/`) against the production build with an in-memory
+  DB; needs `npx playwright install chromium` once
 - `npm run lint` — ESLint
 - `npm run typecheck` — TypeScript check (`tsc -b`)
 
@@ -64,7 +66,8 @@ Course: https://ru.hexlet.io/programs/ai-for-developers — expected behavior de
 
 ## CI
 
-- `.github/workflows/ci.yml` — lint, typecheck, tests and build on every push and pull request.
+- `.github/workflows/ci.yml` — lint, typecheck, tests and build on every push and pull request,
+  plus Playwright E2E and a Docker smoke test.
 - `.github/workflows/release-please.yml` — automated releases via release-please; a release PR
   appears after a `feat`/`fix` commit lands in `main`.
 

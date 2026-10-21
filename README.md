@@ -40,6 +40,7 @@ npm run generate     # генерация OpenAPI, JSON Schema и клиентс
 npm run build        # production-сборка (tsc -b && vite build)
 npm run preview      # предпросмотр production-сборки
 npm test             # запуск тестов
+npm run test:e2e     # E2E-тесты (Playwright), один раз: npx playwright install chromium
 npm run lint         # проверка линтером
 npm run typecheck    # проверка типов
 ```

@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react';
 import type { ProxyOptions } from 'vite';
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 /**
  * Proxies API calls to the backend. The SPA also has a `/bookings` page, so
@@ -23,5 +23,7 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     globals: true,
+    // Playwright specs run separately (`npm run test:e2e`).
+    exclude: [...configDefaults.exclude, 'e2e/**'],
   },
 });

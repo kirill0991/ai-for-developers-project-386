@@ -4,3 +4,5 @@ dist
 tsp-output
 calendar.db
 calendar.db-*
+test-results
+playwright-report
